@@ -9,17 +9,18 @@ module.exports = function toReadable (number) {
         '', '', 'twenty', 'thirty', 'forty',
         'fifty', 'sixty', 'seventy', 'eighty', 'ninety'
     ];
+    if (!number) return beforeTwenty[number];
 
-    if (number < 20) {
-        return beforeTwenty[number]
+    let [ ones, tens, huns ] = String(number).split('').reverse();
+
+    huns = (Number(huns) || 0) === 0 ? '' : beforeTwenty[Number(huns)] + ' hundred';
+    if( tens === '1') {
+        tens = beforeTwenty[Number(tens + ones)];
+        ones = '';
     } else {
-        const [ huns, tens, ones ] = String(number);
-        const strArray = [
-            (Number(huns) || 0) === 0 ? '' : beforeTwenty[huns] + ' hundred',
-            afterTwenty[tens],
-            (Number(ones) || 0) === 0 ? '' : beforeTwenty[tens]
-        ];
-
-        return strArray.join(' ');
+        tens = (Number(tens) || 0) === 0 ? '' : afterTwenty[Number(tens)];
+        ones = (Number(ones) || 0) === 0 ? '' :  beforeTwenty[Number(ones)];
     }
+
+    return [huns, tens, ones].filter(value => value).join(' ');
 }
